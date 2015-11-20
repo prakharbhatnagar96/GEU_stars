@@ -25,7 +25,7 @@ void PassOne(char ProgramFile[])
 
         }
         fscanf(pf,"%x\n",&LOCCTR);
-        fprintf(interf,"%s ","HELLO");
+        fprintf(interf,"%s ",label);
         fprintf(interf,"%s ",mnemonic);
         fprintf(interf,"%x\n",LOCCTR);
         start=LOCCTR;
