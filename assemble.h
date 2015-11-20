@@ -1,7 +1,6 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
-#include"convert.h"
 void PassOne(char ProgramFile[])
 {
     FILE *pf,*interf,*op,*SYM,*info;
