@@ -8,7 +8,7 @@ int PassOne(char ProgramFile[])
     FILE *SYM1;
     int error=0,n,integer;
     char mnemonic[30],operand[60],label[40],ope[60],symbol[40],Pname[7];
-    int LOCCTR=0000,f=0,f1=0,st[4],i,add,l,length,x,temp[4],sf=0,start;
+    int LOCCTR=0000,f=0,f1=0,st[4],i,add,l,length,x,temp[4],sf=0,start,lno=0;
     pf=fopen(ProgramFile,"r");
     SYM=fopen("SYMTAB.txt","w");
     fclose(SYM);
@@ -27,6 +27,8 @@ int PassOne(char ProgramFile[])
             return error;
         }
         fscanf(pf,"%x\n",&LOCCTR);
+        lno++;
+        fprintf(interf,"%d ",lno);
         fprintf(interf,"%s ",label);
         fprintf(interf,"%s ",mnemonic);
         fprintf(interf,"%x\n",LOCCTR);
@@ -41,10 +43,11 @@ int PassOne(char ProgramFile[])
                 strcmp(operand,"\n");
             f=0;
             op=fopen("optab.txt","r");
+            lno++;
             while(!feof(op))
             {
                 fscanf(op,"%s ",&ope);
-                if(strcmp(mnemonic,ope)==0 || strcmp(mnemonic,"WORD")==0 || strcmp(mnemonic,"BYTE")==0 ||strcmp(mnemonic,"RESW")==0||strcmp(mnemonic,"RESB")==0 || strcmp(mnemonic,"RSUB")==0 )
+                if(strcmp(mnemonic,ope)==0 || strcmp(mnemonic,"WORD")==0 || strcmp(mnemonic,"BYTEC")==0 || strcmp(mnemonic,"BYTEX")==0 ||strcmp(mnemonic,"RESW")==0||strcmp(mnemonic,"RESB")==0 || strcmp(mnemonic,"RSUB")==0 )
                 {
                     f=0;break;
 
@@ -57,11 +60,12 @@ int PassOne(char ProgramFile[])
             fclose(op);
             if(f==1)
             {
-                printf("\nERROR: invalid mnemonic used!! %s",mnemonic);
+                printf("\nERROR: invalid mnemonic used!!%s in line:%d ",mnemonic,lno);
                 error=1;
                 getch();
                 return error;
             }
+            fprintf(interf,"%d ",lno);
             if(strcmp(mnemonic,"END")!=0 && strcmp(mnemonic,"START")!=0)
             {
 
@@ -84,7 +88,7 @@ int PassOne(char ProgramFile[])
                 fscanf(SYM1,"%s ",symbol);
                 if(strcmp(label,symbol)==0)
                 {
-                    printf("ERROR:duplicate symbols!!");
+                    printf("ERROR:duplicate symbols!! %s in line :%d",label,lno);
                     error=1;
                     return error;
                     sf=1;
@@ -120,10 +124,22 @@ int PassOne(char ProgramFile[])
             }
             else if(strcmp(mnemonic,"WORD")==0)
                 LOCCTR+=3;
-            else if(strcmp(mnemonic,"BYTE")==0)
+            else if(strcmp(mnemonic,"BYTC")==0)
             {
                 l=strlen(operand);
                 LOCCTR+=l;
+            }
+            else if(strcmp(mnemonic,"BYTEX")==0)
+            {
+                l=strlen(operand);
+                if(l%2==0)
+                {
+                    LOCCTR+=l/2;
+                }
+                else
+                {
+                    LOCCTR+=(l+1)/2;
+                }
             }
             else
                 LOCCTR+=3;
@@ -156,7 +172,6 @@ int PassTwo(char ProgramFile[])
                 fscanf(in,"%s\n",&operand);
             else
                 strcmp(operand,"\n");
-            printf("%X\n",LOCCTR);
             if(strcmp(mnemonic,"START")!=0 && strcmp(mnemonic,"END")!=0 && strcmp(mnemonic,"RESW")!=0 && strcmp(mnemonic,"RESB")!=0 && strcmp(mnemonic,"RSUB")!=0)
             {
                 sym=fopen("SYMTAB.txt","r");
@@ -164,7 +179,7 @@ int PassTwo(char ProgramFile[])
                 {
                     fscanf(sym,"%s ",symbol);
                     fscanf(sym,"%s\n",add);
-                    if(strcmp(operand,symbol)==0 && strcmp(mnemonic,"BYTE")!=0 && strcmp(mnemonic,"WORD")!=0)
+                    if(strcmp(operand,symbol)==0 && strcmp(mnemonic,"BYTEC")!=0 && strcmp(mnemonic,"BYTEX")!=0 && strcmp(mnemonic,"WORD")!=0)
                     {
                             f=1;
                              break;
@@ -191,7 +206,7 @@ int PassTwo(char ProgramFile[])
                         fprintf(ob,"%s ",add);
                     }
                 }
-                else if(strcmp(mnemonic,"BYTE")==0)
+                else if(strcmp(mnemonic,"BYTEC")==0)
                 {
                     l=strlen(operand);
                     for(i=0;i<l;i++)
@@ -199,6 +214,10 @@ int PassTwo(char ProgramFile[])
                         fprintf(ob,"%d",operand[i]);
                     }
                     fprintf(ob," ");
+                }
+                else if(strcmp(mnemonic,"BYTEX")==0)
+                {
+                    fprintf(ob,"%s ",operand);
                 }
                 else if(strcmp(mnemonic,"WORD")==0)
                 {
