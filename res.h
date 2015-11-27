@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<string.h>
-void Text1()
+void Text1() //Writing text record
 {
     FILE *F,*obj,*p;
     int c=0,l;
