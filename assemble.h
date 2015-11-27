@@ -2,29 +2,29 @@
 #include<string.h>
 #include<stdlib.h>
 #include<conio.h>
-int PassOne(char ProgramFile[])
+int PassOne(char ProgramFile[]) ///Function Scanning The Program File and performing several operations of Pass 1
 {
     FILE *pf,*interf,*op,*SYM,*info,*address;
     FILE *SYM1;
     int error=0,n,integer;
     char mnemonic[30],operand[60],label[40],ope[60],symbol[40],Pname[7];
     int LOCCTR=0000,f=0,f1=0,st[4],i,add,l,length,x,temp[4],sf=0,start,lno=0;
-    pf=fopen(ProgramFile,"r");
+    pf=fopen(ProgramFile,"r");//Opening the input File
     if(pf==NULL)
     {
         printf("\n File Doesn't Exist!!");
         getch();
         return 1;
     }
-    SYM=fopen("SYMTAB.txt","w");
+    SYM=fopen("SYMTAB.txt","w"); //Opening a new file for symbol table
     fclose(SYM);
     interf=fopen("intermediate.txt","w");
     address=fopen("address.txt","w");
     if(pf!=NULL)
     {
 
-        fscanf(pf,"%s ",&label);
-        strcpy(Pname,label);
+        fscanf(pf,"%s ",&label);// scanning the first line from the file
+        strcpy(Pname,label); //Program Name
         fscanf(pf,"%s ",&mnemonic);
         if(strcmp(mnemonic,"START")!=0)
         {
@@ -32,10 +32,10 @@ int PassOne(char ProgramFile[])
             error=1;
             return error;
         }
-        fscanf(pf,"%x\n",&LOCCTR);
+        fscanf(pf,"%x\n",&LOCCTR); //initializing LOCCTr
         printf("\n%X",LOCCTR);
         lno++;
-        fprintf(interf,"%d ",lno);
+        fprintf(interf,"%d ",lno);//Writing intermediate file
         fprintf(interf,"%s ",label);
         fprintf(interf,"%s ",mnemonic);
         fprintf(interf,"%x\n",LOCCTR);
@@ -51,7 +51,7 @@ int PassOne(char ProgramFile[])
             f=0;
             op=fopen("optab.txt","r");
             lno++;
-            while(!feof(op))
+            while(!feof(op)) //Verification of Mnemonic
             {
                 fscanf(op,"%s ",&ope);
                 if(strcmp(mnemonic,ope)==0 || strcmp(mnemonic,"WORD")==0 || strcmp(mnemonic,"BYTEC")==0 || strcmp(mnemonic,"BYTEX")==0 ||strcmp(mnemonic,"RESW")==0||strcmp(mnemonic,"RESB")==0 || strcmp(mnemonic,"RSUB")==0 )
@@ -77,7 +77,7 @@ int PassOne(char ProgramFile[])
             {
 
                 fprintf(interf,"%X",LOCCTR);
-                fprintf(address,"%X\n",LOCCTR);
+                fprintf(address,"%X\n",LOCCTR);//ADDRESSING
 
             }
             else
@@ -90,7 +90,7 @@ int PassOne(char ProgramFile[])
             fprintf(interf,"%s ",mnemonic);
             fprintf(interf,"%s\n",operand);
             SYM1=fopen("SYMTAB.txt","r");
-            while(!feof(SYM1))
+            while(!feof(SYM1)) // Dupliacate symbol Verification
             {
                 fscanf(SYM1,"%s ",symbol);
                 if(strcmp(label,symbol)==0)
@@ -119,7 +119,7 @@ int PassOne(char ProgramFile[])
                 fclose(info);
                 return 0;
             }
-            else if(strcmp(mnemonic,"RESB")==0)
+            else if(strcmp(mnemonic,"RESB")==0) //LOCCTR UPDATION
             {
                 integer=atoi(operand);
                 LOCCTR+=integer;
@@ -160,7 +160,7 @@ int PassOne(char ProgramFile[])
     fclose(address);
     return 1;
 }
-int PassTwo(char ProgramFile[])
+int PassTwo(char ProgramFile[]) //Calculating Object codes
 {
     FILE *in,*ob,*sym,*op;
     int f=0,flag=0,opcode,l,i,error,integer,LOCCTR;
@@ -181,7 +181,7 @@ int PassTwo(char ProgramFile[])
                 strcmp(operand,"\n");
             if(strcmp(mnemonic,"START")!=0 && strcmp(mnemonic,"END")!=0 && strcmp(mnemonic,"RESW")!=0 && strcmp(mnemonic,"RESB")!=0 && strcmp(mnemonic,"RSUB")!=0)
             {
-                sym=fopen("SYMTAB.txt","r");
+                sym=fopen("SYMTAB.txt","r"); //Symbol verification
                 while(!feof(sym))
                 {
                     fscanf(sym,"%s ",symbol);
@@ -195,7 +195,7 @@ int PassTwo(char ProgramFile[])
                 }
                 fclose(sym);
                 op=fopen("OPTAB.txt","r");
-                while(!feof(op))
+                while(!feof(op)) //mnemonic verification
                 {
                     fscanf(op,"%s ",ope);
                     fscanf(op,"%d\n",&opcode);
@@ -206,7 +206,7 @@ int PassTwo(char ProgramFile[])
                     }
                 }
                 fclose(op);
-                if(f==1 && flag==1)
+                if(f==1 && flag==1)//calculating object codes
                 {
                         fprintf(ob,"%d",opcode);
                         fprintf(ob,"%s ",add);
