@@ -32,8 +32,7 @@ int PassOne(char ProgramFile[]) ///Function Scanning The Program File and perfor
             error=1;
             return error;
         }
-        fscanf(pf,"%x\n",&LOCCTR); //initializing LOCCTr
-        printf("\n%X",LOCCTR);
+        fscanf(pf,"%x\n",&LOCCTR); //initializing LOCCTR
         lno++;
         fprintf(interf,"%d ",lno);//Writing intermediate file
         fprintf(interf,"%s ",label);
