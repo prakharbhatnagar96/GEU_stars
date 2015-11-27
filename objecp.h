@@ -1,8 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include"res.h"
-int obj(char ProgramFile[],char ObjectFile[])
+#include"res.h" //user defined
+int obj(char ProgramFile[],char ObjectFile[]) //Writing header record and calling for text record
 {
     FILE *pf,*p,*info,*object,*F;
     int error=0,l;
@@ -31,7 +31,7 @@ int obj(char ProgramFile[],char ObjectFile[])
         {
             fprintf(p,"_");
         }
-        fprintf(p,"^%06X",LOCCTR);
+        fprintf(p,"^%06d",LOCCTR);
         fscanf(info,"%d",&pl);
         fprintf(p,"^%06X\n",pl);
 
@@ -43,6 +43,7 @@ int obj(char ProgramFile[],char ObjectFile[])
     fflush(stdin);
     fflush(STDIN_FILENO);
     Text1();
+    return 0;
 
 
 }
