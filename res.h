@@ -15,7 +15,7 @@ void Text1() //Writing text record
         fscanf(F,"%s\n",add);
         if(strcmp(opcode,"--")!=0)
          {
-             fprintf(p,"\n\nT^%s^",add);
+             fprintf(p,"\n\nT^%06s^",add);
              strcat(str,"^");
              strcat(str,opcode);
              l=strlen(opcode);
@@ -36,8 +36,11 @@ void Text1() //Writing text record
             l=strlen(opcode);
             c+=l/2;
         }
-        fprintf(p,"%02X",c);
-        fprintf(p,"%s",str);
+        if(c>0)
+        {
+            fprintf(p,"%02X",c);
+            fprintf(p,"%s",str);
+        }
         strcpy(str,"");
     }
     fclose(F);
